@@ -18,13 +18,13 @@ public class ChatController {
 
   @MessageMapping("/message")
   public void message(ChatMessage message) {
-    if (message.isTo("General")) {
+    if (message.isGeneral()) {
       template.convertAndSend("/topic/general", message);
     }
 
-    if (message.isTo("Cristiam")) {
-      template.convertAndSend("/topic/private", message);
-    }
+    message.getToStream().forEach(to -> {
+      template.convertAndSend("/topic/" + to, message);
+    });
   }
 
 }
